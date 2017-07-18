@@ -1,4 +1,8 @@
- function COOKIE () { 
+/*
+author: Copypasteearth 7/17/2017
+*/
+
+function COOKIE () { 
  
  this.createCookie = function (name,value,days) {
     if (days) {
