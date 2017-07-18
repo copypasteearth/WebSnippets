@@ -1,6 +1,6 @@
- var COOKIE = { 
+ function COOKIE () { 
  
- createCookie : function (name,value,days) {
+ this.createCookie = function (name,value,days) {
     if (days) {
         var date = new Date();
         date.setTime(date.getTime()+(days*24*60*60*1000));
@@ -10,7 +10,7 @@
     document.cookie = name+"="+value+expires+"; path=/";
 }
 ,
-readCookie : function (name) {
+this.readCookie = function (name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
     for(var i=0;i < ca.length;i++) {
@@ -21,7 +21,7 @@ readCookie : function (name) {
     return null;
 }
 ,
-eraseCookie : function(name) {
-    createCookie(name,"",-1);
+this.eraseCookie = function(name) {
+    this.createCookie(name,"",-1);
 }
  }
