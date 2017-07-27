@@ -1,4 +1,5 @@
 <?php
+//author Copypasteearth
 $myObj = new \stdClass();
 $myObj->name = "John";
 $myObj->age = 30;
