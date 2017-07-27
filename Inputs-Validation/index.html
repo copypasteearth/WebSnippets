@@ -1,0 +1,81 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>profile</title>
+        <style>
+            h1 {color:red;}
+           label{
+               width:33%;
+       display:inline-block;
+
+           }
+            input{
+                width:33%;
+       display:inline-block;
+
+            }
+    
+           </style>
+    </head>
+   
+    <body>
+       <link href="validation.css" rel="stylesheet">
+       <script src="validation.min.js"></script>
+       
+       <script>
+        const Rules = validation.getRules();
+        Rules["passmatch"] = {
+         message: "Passwords must match",
+         method: el => {
+            return document.getElementById("psw").value == document.getElementById("psw1").value;
+         }    
+        }
+        </script>
+       <h1>This is an example of different types of Inputs and Validation</h1>
+       <br>
+       <br>
+       <form id="form" action="myform.php" method="post">
+           <label for="fullName">Full Name</label>
+       <input type="text" id="fullName" name="fullName" class="validate" data-validate="required">
+       <br>
+       <label for="email">Email:</label>
+       <input type="email" id="email" name="email" class="validate" data-validate="required, email">
+        <br>
+        <label for="psw">Password</label>
+        <input id="psw" type="password" class="validate" name="psw" data-validate="required">
+        <br>
+        <label for="psw1">Re-enter Password</label>
+        <input id="psw1" type="password" class="validate" name="psw1" data-validate="required, passmatch">
+        <br>
+        <input type="radio" name="gender" value="male" checked class="validate" data-validate="required">Male<br>
+        <input type="radio" name="gender" value="female" class="validate" data-validate="required">Female<br>
+        <input type="radio" name="gender" value="other" class="validate" data-validate="required">Other<br>
+        <input type="checkbox" name="drive" value="drive">I will drive<br>
+        <input type="checkbox" name="bus" value="bus">I will catch the bus<br> 
+        <input type="button" onclick="alert('Hello World!')" value="Click Me!"> <br>
+        <input type="color" name="favcolor"><br>
+        <label for="bday">Birthday</label>
+        <input type="date" name="bday"class="validate" data-validate="required"><br>
+        Enter a date before 1980-01-01:
+        <input type="date" name="bday" max="1979-12-31"><br>
+        Enter a date after 2000-01-01:
+        <input type="date" name="bday" min="2000-01-02"><br>
+        Birthday (date and time):
+         <input type="datetime-local" name="bdaytime"><br>
+
+        Birthday (month and year):
+        <input type="month" name="bdaymonth"><br>
+        Quantity (between 1 and 5):
+        <input type="number" name="quantity" min="1" max="5"><br>
+        rating
+        <input type="range" name="points" min="0" max="10"><br>
+       <input type="submit" value="Submit">
+       <input type="reset">
+       </form>
+      <script>
+          validation.init("form");
+        </script>
+    </body>
+    
+    
+</html>
