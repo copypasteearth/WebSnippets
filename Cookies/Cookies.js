@@ -1,6 +1,6 @@
 /*
 author: Copypasteearth 7/17/2017
-hello world
+hello world again and again
 */
 
 function COOKIE () { 
