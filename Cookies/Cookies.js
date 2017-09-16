@@ -1,5 +1,6 @@
 /*
 author: Copypasteearth 7/17/2017
+hello world
 */
 
 function COOKIE () { 
