@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>profile</title>
+    </head>
+   
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="Cookies.js"></script>
+        <h1>this is a test of Cookies</h1>
+        <h2 id = "cook"></h2>
+        <input id = "cookiename" type="text" placeholder="cookie name..."></input>
+        <input id = "cookievalue" type="text" placeholder="cookie value..."></input>
+        <input id = "days" type = "number" placeholder="number of days"></input>
+        <button onclick="buttonClick()">Create Cookie</button>
+        <br>
+        <input id = "getcookie" placeholder="cookie name"></input>
+        <button onclick="getCookie()">Read Cookie</button>
+        <br>
+        <input id = "erase" placeholder="cookie name"></input>
+        <button onclick="deleteCookie()">Erase Cookie</button>
+        <p id= "paragraph"></p>
+        <script>
+            var Cookie = new COOKIE();
+        function buttonClick(){
+            var name = document.getElementById("cookiename").value;
+            var value = document.getElementById("cookievalue").value;
+            var days = document.getElementById("days").value;
+            Cookie.createCookie(name,value,days);
+            document.getElementById("paragraph").innerText = "Cookie Created: " + name + "=" + value + ";" + days;
+        }
+        function getCookie(){
+            var name = document.getElementById("getcookie").value;
+            var cookie = Cookie.readCookie(name);
+            document.getElementById("paragraph").innerText = "Cookie Read: " + name + "=" + cookie;
+        }
+        function deleteCookie(){
+            var name = document.getElementById("erase").value;
+            Cookie.eraseCookie(name);
+            document.getElementById("paragraph").innerText = "Cookie Erased: " + name;
+        }
+        </script>
+    </body>
+    
+    
+</html>
