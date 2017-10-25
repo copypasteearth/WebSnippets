@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>profile</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type='text/javascript' src='config.js'></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3mobile.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    </head>
+   
+    <body>
+
+      <input class="w3-input w3-border w3-round-large" type="text" id="input" ></input>
+      <div class="w3-center">
+      <button class="w3-button w3-white w3-border w3-border- green w3-round-large w3-left" onclick="InputClick()">Submit</button>
+      
+      <button class="w3-button w3-white w3-border w3-border- green w3-round-large" onclick="StartSpeech()">Speak</button>
+      <button class="w3-button w3-white w3-border w3-border- green w3-round-large w3-right" onclick="ContinueClick()">Continue</button>
+    </div>
+      
+      <br>
+      <div class="w3-container w3-border w3-large" id="textarea"></div>
+      <script type="text/javascript">
+          var currentData;
+          var dataCounter = 0;
+          
+          //change to your access token
+          var accessToken = config.access_token;
+          function resumeInfinity() {
+              window.speechSynthesis.resume();
+             timeoutResumeInfinity = setTimeout(resumeInfinity, 1000);
+          }
+          function ContinueClick(){
+            if(currentData){
+              console.log("datashifted");
+              dataCounter++;
+              SoundInformation();
+            }
+          }
+          function SoundInformation(){
+            if(currentData[dataCounter] == ""){
+              dataCounter++;
+              SoundInformation();
+            }else{
+              var text = document.getElementById("textarea");
+              text.innerHTML = currentData[dataCounter] + "<br><br>" + text.innerHTML;
+              var msg = new SpeechSynthesisUtterance(currentData[dataCounter]);
+              msg.onstart = function(a){
+                  resumeInfinity();
+              };
+                 msg.onend = function(e) {
+                  console.log("ended");
+                  console.log(currentData.length + ":::" + dataCounter);
+                  clearTimeout(timeoutResumeInfinity);
+                  var msgcontinue;
+                  
+                    msgcontinue = new SpeechSynthesisUtterance('would you like me to continue');
+                  
+                   
+                   msgcontinue.onstart = function(a){
+                  resumeInfinity();
+              };
+              msgcontinue.onend = function(e) {
+                  console.log("ended");
+                  clearTimeout(timeoutResumeInfinity);
+
+                };
+
+                   window.speechSynthesis.speak(msgcontinue);
+                    };
+                        window.speechSynthesis.speak(msg);
+            }
+
+            
+          }
+          function SearchWiki(title){
+             var wikiURL = "https://en.wikipedia.org/w/api.php";
+            wikiURL += '?' + $.param({
+            'action' : 'opensearch',
+           'search' : title,
+            'prop'  : 'revisions',
+            'rvprop' : 'content',
+           'format' : 'json',
+           'limit' : 100
+              });
+
+             $.ajax( {
+              url: wikiURL,
+              dataType: 'jsonp',
+              success: function(data) {
+                currentData = data[2];
+                dataCounter = 0;
+                
+                 console.log(data);
+                 var text = document.getElementById("textarea");
+                 text.innerHTML = document.getElementById("input").value + "<br><br>" + text.innerHTML;
+                 SoundInformation();
+
+                 
+             }
+            } );
+          }
+            
+
+              function StartSpeech(){
+                var recognition = new webkitSpeechRecognition();
+                    recognition.onresult = function(event) { 
+                     console.log(event.results[0][0].transcript) 
+                     document.getElementById("input").value = event.results[0][0].transcript;
+                     InputClick();
+                      }
+                    recognition.start();
+              }
+              function InputClick(){
+                var input = document.getElementById("input").value;
+                $.ajax({
+                      url: 'https://api.wit.ai/message',
+                      data: {
+                              'q': input,
+                               'access_token' : accessToken
+                             },
+                             dataType: 'jsonp',
+                             method: 'GET',
+                     success: function(response) {
+                      console.log("success!", response);
+                      var text = document.getElementById("textarea");
+                      if(response.entities.wikipedia_search_query && response.entities.intent){
+                        if(response.entities.wikipedia_search_query[0].confidence > response.entities.intent[0].confidence){
+                            console.log(response.entities.wikipedia_search_query[0].value.replace(/ /g,"_"));
+                          //SearchWiki(response.entities.wikipedia_search_query[0].value);
+                          SearchWiki(response.entities.wikipedia_search_query[0].value.replace(/ /g,"|"));
+                        }else{
+                            text.innerHTML = document.getElementById("input").value + "<br>" + response.entities.intent[0].value + "<br>" + text.innerHTML;
+                        var msg = new SpeechSynthesisUtterance(response.entities.intent[0].value);
+                        window.speechSynthesis.speak(msg);
+                        }
+                      }
+                      else if(response.entities.wikipedia_search_query){
+                        console.log(response.entities.wikipedia_search_query[0].value.replace(/ /g,"_"));
+                          //SearchWiki(response.entities.wikipedia_search_query[0].value);
+                          SearchWiki(response.entities.wikipedia_search_query[0].value.replace(/ /g,"|"));
+                      }
+                      else if(response.entities.intent){
+                        text.innerHTML = document.getElementById("input").value + "<br>" + response.entities.intent[0].value + "<br>" + text.innerHTML;
+                        var msg = new SpeechSynthesisUtterance(response.entities.intent[0].value);
+                        window.speechSynthesis.speak(msg);
+                      }
+                      
+                                    }
+                      });
+          console.log(document.getElementById("input").value);
+        }
+      </script>
+    </body>
+    
+    
+</html>
